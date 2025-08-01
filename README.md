@@ -1,2 +1,5 @@
-# CapstoneVotingSystem-BACKEND
-https://docs.google.com/document/d/1ZsaO6LUcmD7EBStYuN_miMHOyWWgq5Bgcm6hbBsldbw/edit?usp=sharing
+# Capstone-Frontend
+
+## Hermosa PM API Documentation
+
+Project Documentation: https://docs.google.com/document/d/1ZsaO6LUcmD7EBStYuN_miMHOyWWgq5Bgcm6hbBsldbw/edit?usp=sharing
