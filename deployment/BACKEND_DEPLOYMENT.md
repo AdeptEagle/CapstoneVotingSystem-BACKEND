@@ -1,4 +1,9 @@
-# Backend Deployment Guide
+# SSC Election 2025 - Backend Deployment Guide
+
+## Deployment Status
+- **Frontend**: ✅ LIVE at https://sscelection2025.vercel.app
+- **Backend**: ⏳ Ready for deployment
+- **Integration**: ⏳ Pending backend deployment
 
 ## Platform Options (Free Tier)
 
@@ -30,34 +35,68 @@
 4. Add `vercel.json` config file
 5. Deploy
 
-## Environment Variables
+## Environment Variables (SSC Election 2025)
 ```
 PORT=3000
 NODE_ENV=production
 DATABASE_URL=your_database_url
-JWT_SECRET=your_jwt_secret
-CORS_ORIGIN=*
+JWT_SECRET=your_jwt_secret_key
+CORS_ORIGIN=https://sscelection2025.vercel.app
+STUDENT_ID_PATTERN=^[0-9]{8,12}$
+ENCRYPTION_KEY=your_encryption_key
+VOTE_START_DATE=2025-08-01T00:00:00Z
+VOTE_END_DATE=2025-08-31T23:59:59Z
+ADMIN_EMAIL=admin@ssc.edu
+SUPER_ADMIN_EMAIL=superadmin@ssc.edu
 ```
 
-## Deployment Checklist
-- [ ] Platform account created
+## Deployment Checklist (SSC Election 2025)
+- [ ] Platform account created (Render/Railway/Vercel)
 - [ ] Repository connected  
 - [ ] Root directory set to `VotingSystem_api`
 - [ ] Build/start commands configured
-- [ ] Environment variables added
+- [ ] Environment variables added (SSC Election specific)
+- [ ] Database configured and connected
+- [ ] CORS configured for frontend domain
+- [ ] Student ID validation pattern set
 - [ ] Deployment successful
 - [ ] API health check tested
+- [ ] Frontend-backend integration tested
+- [ ] Backend URL updated in frontend environment
 - [ ] URL documented in main README
+
+## Post-Deployment Integration
+1. **Update Frontend Environment**
+   ```
+   REACT_APP_API_URL=https://your-backend-url.com/api
+   ```
+2. **Test Critical Endpoints**
+   - Student login functionality
+   - Voter registration
+   - Candidate retrieval
+   - Vote submission
+   - Real-time results
 
 ## Testing Deployed API
 ```bash
+# Health check
 curl https://your-api-url.com/api/health
+
+# Test student login
+curl -X POST https://your-api-url.com/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"studentId":"12345678","password":"testpass"}'
 ```
 
 Expected response:
 ```json
-{"status": "OK", "message": "API is running"}
+{
+  "status": "OK", 
+  "message": "SSC Election 2025 API is running",
+  "version": "1.0.0",
+  "frontend": "https://sscelection2025.vercel.app"
+}
 ```
 
 ---
-*Deployment Instructions - Hermosa PM*
+*SSC Election 2025 Backend Deployment - Hermosa PM Branch*

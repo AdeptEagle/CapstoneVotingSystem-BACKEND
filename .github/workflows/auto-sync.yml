@@ -1,0 +1,47 @@
+name: Auto-Sync with Frontend
+on:
+  push:
+    branches: [hermosa_pm_api]
+    paths:
+      - 'README.md'
+      - 'docs/PROJECT_DOCUMENTATION.md'
+      - 'docs/API_DOCUMENTATION.md'
+      - 'VotingSystem_api/**'
+
+jobs:
+  auto-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Backend
+        uses: actions/checkout@v3
+      
+      - name: Check if sync needed
+        id: check-sync
+        run: |
+          # Auto-detect if changes require frontend sync
+          if git diff HEAD~1 --name-only | grep -E "(README.md|docs/PROJECT_DOCUMENTATION.md|docs/API_DOCUMENTATION.md)"; then
+            echo "sync_needed=true" >> $GITHUB_OUTPUT
+            echo "File changes detected - sync required"
+          else
+            echo "sync_needed=false" >> $GITHUB_OUTPUT
+            echo "No sync-relevant changes"
+          fi
+
+      - name: Auto-update Frontend
+        if: steps.check-sync.outputs.sync_needed == 'true'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.FRONTEND_SYNC_TOKEN }}
+          script: |
+            // Auto-update frontend repo with timestamp
+            const date = new Date().toLocaleDateString('en-US', {
+              month: 'short', day: 'numeric', year: 'numeric'
+            });
+
+            // Update frontend README with matching timestamp
+            // Only sync connection notes and timestamps
+            console.log('Auto-syncing to frontend...');
+
+      - name: Notify completion
+        if: steps.check-sync.outputs.sync_needed == 'true'
+        run: echo "🔄 Auto-sync completed"

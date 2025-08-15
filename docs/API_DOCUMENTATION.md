@@ -1,8 +1,9 @@
-# API Reference Documentation
+# SSC Election 2025 - API Reference Documentation
 
 ## Base URL
 - Development: `http://localhost:3000/api`
-- Production: `https://your-api-url.com/api`
+- Production: `https://your-backend-api-url.com/api`
+- Frontend: `https://sscelection2025.vercel.app`
 
 ## Authentication
 JWT tokens required for protected endpoints.
@@ -10,38 +11,78 @@ JWT tokens required for protected endpoints.
 Authorization: Bearer <token>
 ```
 
-## Endpoints
+## Core API Endpoints
 
 ### Health Check
 ```
 GET /api/health
 ```
-Response: `{"status": "OK"}`
+Response: `{"status": "OK", "message": "SSC Election 2025 API Running"}`
 
-### Authentication
+### Authentication (Student-based)
 ```
 POST /api/auth/login
-Body: {"email": "user@example.com", "password": "password"}
+Body: {"studentId": "12345678", "password": "password"}
+Response: {"token": "jwt_token", "user": {...}, "role": "user|admin|super_admin"}
 
 POST /api/auth/register  
-Body: {"email": "...", "password": "...", "firstName": "...", "lastName": "..."}
+Body: {
+  "studentId": "12345678", 
+  "password": "...", 
+  "firstName": "...", 
+  "lastName": "...",
+  "course": "...",
+  "yearLevel": "..."
+}
+
+POST /api/auth/forgot-password
+Body: {"studentId": "12345678"}
+
+POST /api/auth/reset-password
+Body: {"token": "reset_token", "newPassword": "..."}
+```
+
+### User Management
+```
+GET /api/users/profile (Authenticated)
+PUT /api/users/profile (Authenticated)
+GET /api/users (Admin/Super Admin only)
+PUT /api/users/:id/role (Super Admin only)
+```
+
+### Election Management
+```
+GET /api/elections (Public - basic info)
+GET /api/elections/current (Public - active election)
+POST /api/elections (Super Admin only)
+PUT /api/elections/:id (Super Admin only)
 ```
 
 ### Candidates
 ```
-GET /api/candidates
-POST /api/candidates (Admin only)
+GET /api/candidates (Public during election)
+GET /api/candidates/:position (Public - by position)
+POST /api/candidates (Admin/Super Admin only)
+PUT /api/candidates/:id (Admin/Super Admin only)
+DELETE /api/candidates/:id (Super Admin only)
 ```
 
 ### Voting
 ```
 POST /api/votes
 Body: {"candidateId": "id", "position": "President"}
+Headers: Authorization Required
+
+GET /api/votes/verify/:userId (Admin - verify vote status)
+GET /api/votes/audit (Super Admin - audit trail)
 ```
 
-### Results
+### Results & Analytics
 ```
-GET /api/results (Admin or after voting ends)
+GET /api/results (Public after voting or Admin/Super Admin anytime)
+GET /api/results/live (Real-time results - Admin/Super Admin)
+GET /api/results/:position (Results by position)
+GET /api/analytics/participation (Admin/Super Admin)
 ```
 
 ## Error Responses
@@ -51,22 +92,38 @@ GET /api/results (Admin or after voting ends)
 - `404` Not Found
 - `500` Server Error
 
-## Database Schema
+## Database Schema (SSC Election 2025)
 
-### Users
+### Users (Students)
 ```
-id, email, password, firstName, lastName, role, hasVoted
+id, studentId (unique), password (hashed), firstName, lastName, 
+course, yearLevel, role (user/admin/super_admin), hasVoted, 
+isVerified, createdAt, updatedAt
+```
+
+### Elections
+```
+id, title, description, startDate, endDate, isActive, 
+createdBy, settings (JSON), createdAt, updatedAt
 ```
 
 ### Candidates  
 ```
-id, name, position, description, imageUrl
+id, name, position, description, imageUrl, platform, 
+electionId, voteCount, isActive, createdAt, updatedAt
 ```
 
 ### Votes
 ```
-id, userId, candidateId, position, createdAt
+id, userId, candidateId, position, electionId, 
+ipAddress (encrypted), createdAt
+```
+
+### Audit_Logs
+```
+id, userId, action, details (JSON), ipAddress, 
+userAgent, createdAt
 ```
 
 ---
-*API Reference - Hermosa PM*
+*SSC Election 2025 API Reference - Hermosa PM Branch*
