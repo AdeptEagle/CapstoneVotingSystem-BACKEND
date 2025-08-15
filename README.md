@@ -1,1 +1,1 @@
-# CapstoneVotingSystem-BACKEND
+08/15/25 Making use case diagram (partial), actvity diagram (partial )
